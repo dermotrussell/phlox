@@ -1,6 +1,6 @@
 <?php
 
-namespace CraftingInterpreters;
+namespace craftinginterpreters;
 
 use TokenType;
 
@@ -64,9 +64,63 @@ class Scanner {
                 }
                 break;
 
+            case " ":
+            case "\r":
+            case "\t":
+                // Ignore whitespace
+                break;
+
+            case "\n":
+                $this->line++; break;
+
+            case "\"":
+                $this->string(); break;
+
             default:
-                error($this->line, "Unexpected character: " . $c); break;
+                if ($this->isDigit($c)) {
+                    $this->number();
+                }
+                else {
+                    error($this->line, "Unexpected character: " . $c);
+                    break;
+                }
         }
+    }
+
+    private function isDigit(string $c) : bool {
+        return $c[0] > '0' && $c[0] <= '9';
+    }
+
+    private function number() : void {
+        while ($this->isDigit($this->peek())) $this->advance();
+
+        // Look for a fractional part
+        if ($this->peek() == "." && $this->isDigit($this->peekNext())) {
+            // Consume the "."
+            $this->advance();
+
+            while ($this->isDigit($this->peek())) $this->advance();
+        }
+
+        $this->addTokenLiteral(TokenType::NUMBER, );
+    }
+
+    private function string(): void {
+        while ($this->peek() != "\"" && !$this->isAtEnd()) {
+            if ($this->peek() == "\n") $this->line++;
+            $this->advance();
+        }
+
+        if ($this->isAtEnd()) {
+            error($this->line, "Unterminated string.");
+            return;
+        }
+
+        $this->advance(); // The closing "
+
+        // Trim the surrounding quotes
+        $value = substr($this->source, $this->start + 1, $this->current - ($this->start+2));
+        $this->addTokenLiteral(TokenType::STRING, (object)$value);
     }
 
     private function peek() : string {
@@ -91,7 +145,7 @@ class Scanner {
     }
 
     private function addTokenLiteral(TokenType $type, object $literal) : void {
-        $text = $this->source.substr($this->start, $this->current-$this->start);
+        $text = substr($this->source, $this->start, $this->current-$this->start);
         $this->tokens->add(new Token($type, $text, $literal, $this->line));
     }
 }

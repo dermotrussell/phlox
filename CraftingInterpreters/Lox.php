@@ -1,6 +1,6 @@
 <?php
 
-namespace CraftingInterpreters;
+namespace craftinginterpreters;
 
 $GLOBALS['hadError'] = false;
 

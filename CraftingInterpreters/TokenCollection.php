@@ -1,6 +1,6 @@
 <?php
 
-namespace CraftingInterpreters;
+namespace craftinginterpreters;
 
 use ArrayIterator;
 use Traversable;
