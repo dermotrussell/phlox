@@ -5,6 +5,27 @@ namespace loxinterpreter;
 use TokenType;
 
 class Scanner {
+    const STR_QUOTE = "\"";
+    const STR_EQUAL = "=";
+    const STR_LEFT_PAREN = "(";
+    const STR_RIGHT_PAREN = ")";
+    const STR_LEFT_BRACE = "{";
+    const STR_RIGHT_BRACE = "}";
+    const STR_SLASH = "/";
+    const STR_NEWLINE = "\n";
+    const STR_COMMA = ",";
+    const STR_DOT = ".";
+    const STR_MINUS = "-";
+    const STR_PLUS = "+";
+    const STR_SEMICOLON = ";";
+    const STR_STAR = "*";
+    const STR_BANG = "!";
+    const STR_LESS_THAN = "<";
+    const STR_GREATER_THAN = ">";
+    const STR_SPACE = " ";
+    const STR_CR = "\r";
+    const STR_TAB = "\t";
+
     private string $source;
     private TokenCollection $tokens;
     private int $start = 0;
@@ -38,42 +59,42 @@ class Scanner {
         $c = $this->advance();
 
         switch ($c) {
-            case "(": $this->addToken(TokenType::LEFT_PAREN); break;
-            case ")": $this->addToken(TokenType::RIGHT_PAREN); break;
-            case "{": $this->addToken(TokenType::LEFT_BRACE); break;
-            case "}": $this->addToken(TokenType::RIGHT_BRACE); break;
+            case self::STR_LEFT_PAREN: $this->addToken(TokenType::LEFT_PAREN); break;
+            case self::STR_RIGHT_PAREN: $this->addToken(TokenType::RIGHT_PAREN); break;
+            case self::STR_LEFT_BRACE: $this->addToken(TokenType::LEFT_BRACE); break;
+            case self::STR_RIGHT_BRACE: $this->addToken(TokenType::RIGHT_BRACE); break;
 
-            case ",": $this->addToken(TokenType::COMMA); break;
-            case ".": $this->addToken(TokenType::DOT); break;
-            case "-": $this->addToken(TokenType::MINUS); break;
-            case "+": $this->addToken(TokenType::PLUS); break;
-            case ";": $this->addToken(TokenType::SEMICOLON); break;
-            case "*": $this->addToken(TokenType::STAR); break;
+            case self::STR_COMMA: $this->addToken(TokenType::COMMA); break;
+            case self::STR_DOT: $this->addToken(TokenType::DOT); break;
+            case self::STR_MINUS: $this->addToken(TokenType::MINUS); break;
+            case self::STR_PLUS: $this->addToken(TokenType::PLUS); break;
+            case self::STR_SEMICOLON: $this->addToken(TokenType::SEMICOLON); break;
+            case self::STR_STAR: $this->addToken(TokenType::STAR); break;
 
-            case "!": $this->addToken($this->match("=") ? TokenType::BANG_EQUAL : TokenType::BANG); break;
-            case "=": $this->addToken($this->match("=") ? TokenType::EQUAL_EQUAL : TokenType::EQUAL); break;
-            case "<": $this->addToken($this->match("=") ? TokenType::LESS_EQUAL : TokenType::LESS); break;
-            case ">": $this->addToken($this->match("=") ? TokenType::GREATER_EQUAL : TokenType::GREATER); break;
+            case self::STR_BANG: $this->addToken($this->match(self::STR_EQUAL) ? TokenType::BANG_EQUAL : TokenType::BANG); break;
+            case self::STR_EQUAL: $this->addToken($this->match(self::STR_EQUAL) ? TokenType::EQUAL_EQUAL : TokenType::EQUAL); break;
+            case self::STR_LESS_THAN: $this->addToken($this->match(self::STR_EQUAL) ? TokenType::LESS_EQUAL : TokenType::LESS); break;
+            case self::STR_GREATER_THAN: $this->addToken($this->match(self::STR_EQUAL) ? TokenType::GREATER_EQUAL : TokenType::GREATER); break;
 
-            case "/":
-                if ($this->match("/")) {
+            case self::STR_SLASH:
+                if ($this->match(self::STR_SLASH)) {
                     // A comment goes until the end of the line
-                    while ($this->peek() != "\n" && !$this->isAtEnd()) $this->advance();
+                    while ($this->peek() != self::STR_NEWLINE && !$this->isAtEnd()) $this->advance();
                 } else {
                     $this->addToken(TokenType::SLASH);
                 }
                 break;
 
-            case " ":
-            case "\r":
-            case "\t":
+            case self::STR_SPACE:
+            case self::STR_CR:
+            case self::STR_TAB:
                 // Ignore whitespace
                 break;
 
-            case "\n":
+            case self::STR_NEWLINE:
                 $this->line++; break;
 
-            case "\"":
+            case self::STR_QUOTE:
                 $this->string(); break;
 
             default:
@@ -95,19 +116,20 @@ class Scanner {
         while ($this->isDigit($this->peek())) $this->advance();
 
         // Look for a fractional part
-        if ($this->peek() == "." && $this->isDigit($this->peekNext())) {
+        if ($this->peek() == self::STR_DOT && $this->isDigit($this->peekNext())) {
             // Consume the "."
             $this->advance();
 
             while ($this->isDigit($this->peek())) $this->advance();
         }
 
-        $this->addTokenLiteral(TokenType::NUMBER, );
+        $value = substr($this->source, $this->start, $this->current - ($this->start));
+        $this->addTokenLiteral(TokenType::NUMBER, (object)$value);
     }
 
     private function string(): void {
-        while ($this->peek() != "\"" && !$this->isAtEnd()) {
-            if ($this->peek() == "\n") $this->line++;
+        while ($this->peek() != self::STR_QUOTE && !$this->isAtEnd()) {
+            if ($this->peek() == self::STR_NEWLINE) $this->line++;
             $this->advance();
         }
 
@@ -124,8 +146,13 @@ class Scanner {
     }
 
     private function peek() : string {
-        if ($this->isAtEnd()) return "\n";
+        if ($this->isAtEnd()) return self::STR_NEWLINE;
         return $this->source[$this->current];
+    }
+
+    private function peekNext() : string {
+        if ($this->isAtEnd()) return self::STR_NEWLINE;
+        return $this->source[$this->current + 1];
     }
 
     private function match(string $expected) : bool {
