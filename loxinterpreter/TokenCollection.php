@@ -13,8 +13,7 @@ final class TokenCollection implements \ArrayAccess, \IteratorAggregate {
     /**
      * @param array $tokens
      */
-    public function __construct(Token ... $tokens)
-    {
+    public function __construct(Token ... $tokens) {
         $this->tokens = $tokens;
     }
 

@@ -3,6 +3,7 @@
 namespace loxinterpreter;
 
 use TokenType;
+use Ds\Map;
 
 class Scanner {
     const STR_QUOTE = "\"";
@@ -32,12 +33,32 @@ class Scanner {
     private int $current = 0;
     private int $line = 1;
 
+    private Map $reservedwords;
+
     /**
      * @param $source
      */
     public function __construct($source) {
         $this->source = $source;
         $this->tokens = new TokenCollection();
+        $this->reservedwords = new Map([
+            "and" => TokenType::AND,
+            "class" => TokenType::_CLASS,
+            "else" => TokenType::ELSE,
+            "false" => TokenType::FALSE,
+            "for" => TokenType::FOR,
+            "fun" => TokenType::FUN,
+            "if" => TokenType::IF,
+            "nil" => TokenType::NIL,
+            "or" => TokenType::OR,
+            "print" => TokenType::PRINT,
+            "return" => TokenType::RETURN,
+            "super" => TokenType::SUPER,
+            "this" => TokenType::THIS,
+            "true" => TokenType::TRUE,
+            "var" => TokenType::VAR,
+            "while" => TokenType::WHILE
+        ]);
     }
 
     public function scanTokens(): TokenCollection {
@@ -100,6 +121,8 @@ class Scanner {
             default:
                 if ($this->isDigit($c)) {
                     $this->number();
+                } else if ($this->isAlpha($c)) {
+                    $this->identifier();
                 }
                 else {
                     error($this->line, "Unexpected character: " . $c);
@@ -113,14 +136,14 @@ class Scanner {
     }
 
     private function number() : void {
-        while ($this->isDigit($this->peek())) $this->advance();
+        while ($this->isDigit($this->peek()) != null) $this->advance();
 
         // Look for a fractional part
         if ($this->peek() == self::STR_DOT && $this->isDigit($this->peekNext())) {
             // Consume the "."
             $this->advance();
 
-            while ($this->isDigit($this->peek())) $this->advance();
+            while ($this->isDigit($this->peek()) != null) $this->advance();
         }
 
         $value = substr($this->source, $this->start, $this->current - ($this->start));
@@ -129,7 +152,7 @@ class Scanner {
 
     private function string(): void {
         while ($this->peek() != self::STR_QUOTE && !$this->isAtEnd()) {
-            if ($this->peek() == self::STR_NEWLINE) $this->line++;
+            if ($this->peek() == null) $this->line++;
             $this->advance();
         }
 
@@ -145,13 +168,13 @@ class Scanner {
         $this->addTokenLiteral(TokenType::STRING, (object)$value);
     }
 
-    private function peek() : string {
-        if ($this->isAtEnd()) return self::STR_NEWLINE;
+    private function peek() : ?string {
+        if ($this->isAtEnd()) return null;
         return $this->source[$this->current];
     }
 
-    private function peekNext() : string {
-        if ($this->isAtEnd()) return self::STR_NEWLINE;
+    private function peekNext() : ?string {
+        if ($this->current + 1 >= strlen($this->source)) return null;
         return $this->source[$this->current + 1];
     }
 
@@ -174,5 +197,26 @@ class Scanner {
     private function addTokenLiteral(TokenType $type, object $literal) : void {
         $text = substr($this->source, $this->start, $this->current-$this->start);
         $this->tokens->add(new Token($type, $text, $literal, $this->line));
+    }
+
+    private function isAlpha(string $c) : bool {
+        return ($c >= "a" && $c <= "z") ||
+            ($c >= "A" && $c <= "Z") ||
+            $c == "_";
+    }
+
+    private function identifier() : void {
+        while ($this->isAlphaNumeric($this->peek())) $this->advance();
+
+        $text = substr($this->source, $this->start, $this->current - $this->start);
+        $type = $this->reservedwords->get($text, null);
+
+        if ($type == null) $type = TokenType::IDENTIFIER;
+
+        $this->addToken($type);
+    }
+
+    private function isAlphaNumeric(?string $c) : bool {
+        return $this->isAlpha($c) || $this->isDigit($c);
     }
 }

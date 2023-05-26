@@ -4,6 +4,9 @@
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/loxinterpreter" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/tests" isTestSource="true" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/composer" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/php-ds/php-ds" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

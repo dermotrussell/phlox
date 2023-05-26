@@ -9,6 +9,8 @@ require_once "Token.php";
 require_once "TokenCollection.php";
 require_once "Scanner.php";
 
+require 'vendor/autoload.php';
+
 if ($argc == 1) {
     echo "Usage: php Lox.php [script] " . PHP_EOL;
     exit(64);
