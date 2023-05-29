@@ -43,4 +43,8 @@ final class TokenCollection implements \ArrayAccess, \IteratorAggregate {
     public function offsetUnset(mixed $offset): void {
         unset($this->tokens[$offset]);
     }
+
+    public function size(): int {
+        return count($this->tokens);
+    }
 }

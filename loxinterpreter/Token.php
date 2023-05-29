@@ -27,4 +27,32 @@ class Token {
     public function __toString(): string {
         return sprintf("%s %s", $this->type->name, $this->lexeme);
     }
+
+    /**
+     * @return TokenType
+     */
+    public function getType(): TokenType {
+        return $this->type;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLexeme(): string {
+        return $this->lexeme;
+    }
+
+    /**
+     * @return Object
+     */
+    public function getLiteral(): object {
+        return $this->literal;
+    }
+
+    /**
+     * @return int
+     */
+    public function getLine(): int {
+        return $this->line;
+    }
 }
