@@ -1,13 +1,13 @@
 <?php
 
-namespace loxinterpreter;
+namespace lox;
 
 use PHPUnit\Framework\TestCase;
 
-require_once "src/loxinterpreter/Scanner.php";
-require_once "src/loxinterpreter/TokenCollection.php";
-require_once "src/loxinterpreter/TokenType.php";
-require_once "src/loxinterpreter/Token.php";
+require_once "src/lox/Scanner.php";
+require_once "src/lox/TokenCollection.php";
+require_once "src/lox/TokenType.php";
+require_once "src/lox/Token.php";
 
 class ScannerTest extends TestCase
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace loxinterpreter;
+namespace lox;
 
 enum TokenType {
     // Single-character tokens
