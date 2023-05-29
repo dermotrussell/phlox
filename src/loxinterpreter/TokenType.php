@@ -1,5 +1,7 @@
 <?php
 
+namespace loxinterpreter;
+
 enum TokenType {
     // Single-character tokens
     case LEFT_PAREN; case RIGHT_PAREN; case LEFT_BRACE; case RIGHT_BRACE;

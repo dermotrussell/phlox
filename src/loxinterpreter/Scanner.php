@@ -2,7 +2,6 @@
 
 namespace loxinterpreter;
 
-use TokenType;
 use Ds\Map;
 
 class Scanner {

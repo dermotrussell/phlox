@@ -2,8 +2,6 @@
 
 namespace loxinterpreter;
 
-use TokenType;
-
 class Token {
     private TokenType $type;
     private string $lexeme;
