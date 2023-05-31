@@ -17,7 +17,7 @@ class ScannerTest extends TestCase
     public function testComment() : void {
         $source = "// This is a comment";
 
-        $tokens = $this->parse($source);
+        $tokens = $this->scan($source);
 
         $this->assertEquals(1, $tokens->size());
         $this->assertEquals(TokenType::EOF, $tokens[0]->getType());
@@ -27,7 +27,7 @@ class ScannerTest extends TestCase
      * @param string $source
      * @return TokenCollection
      */
-    protected function parse(string $source): TokenCollection {
+    protected function scan(string $source): TokenCollection {
         $scanner = new Scanner($source);
         return $scanner->scanTokens();
     }
@@ -39,7 +39,7 @@ class ScannerTest extends TestCase
         false; // Not *not* false.
         END;
 
-        $tokens = $this->parse($source);
+        $tokens = $this->scan($source);
 
         $this->assertEquals(5, $tokens->size());
         $this->assertEquals(TokenType::TRUE, $tokens[0]->getType());
@@ -56,7 +56,7 @@ class ScannerTest extends TestCase
         12.34; // A decimal number.
         END;
 
-        $tokens = $this->parse($source);
+        $tokens = $this->scan($source);
 
         $this->assertEquals(5, $tokens->size());
         $this->assertEquals(TokenType::NUMBER, $tokens[0]->getType());
@@ -76,7 +76,7 @@ class ScannerTest extends TestCase
         "123"; // This is a string, not a number.
         END;
 
-        $tokens = $this->parse($source);
+        $tokens = $this->scan($source);
 
         $this->assertEquals(7, $tokens->size());
         $this->assertEquals(TokenType::STRING, $tokens[0]->getType());
