@@ -2,6 +2,8 @@
 
 namespace lox;
 
+require_once "src/lox/Expr.php";
+
 class Binary extends Expr {
 
     private Expr $left;
@@ -19,8 +21,8 @@ class Binary extends Expr {
         $this->right = $right;
     }
 
-    function accept(ExprVisitor $visitor): ExprVisitor {
-        return $visitor->visitBinaryExpr($this);
+    public function accept(ExprVisitor $visitor): void {
+        $visitor->visitBinaryExpr($this);
     }
 
     /**
@@ -42,5 +44,9 @@ class Binary extends Expr {
      */
     public function getRight(): Expr {
         return $this->right;
+    }
+
+    public function __toString(): string {
+        return "";
     }
 }

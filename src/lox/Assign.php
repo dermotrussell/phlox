@@ -2,8 +2,7 @@
 
 namespace lox;
 
-class Assign extends Expr
-{
+class Assign extends Expr {
     private Token $name;
     private Expr $value;
 
@@ -16,8 +15,8 @@ class Assign extends Expr
         $this->value = $value;
     }
 
-    function accept(ExprVisitor $visitor): ExprVisitor {
-        return $visitor->visitAssignExpr($this);
+    public function accept(ExprVisitor $visitor): void {
+        $visitor->visitAssignExpr($this);
     }
 
     /**
@@ -32,5 +31,9 @@ class Assign extends Expr
      */
     public function getValue(): Expr {
         return $this->value;
+    }
+
+    public function __toString(): string {
+        return "TODO";
     }
 }

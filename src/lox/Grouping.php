@@ -12,8 +12,8 @@ class Grouping extends Expr {
         $this->expression = $expression;
     }
 
-    function accept(ExprVisitor $visitor): ExprVisitor {
-        return $visitor->visitGroupingExpr($this);
+    public function accept(ExprVisitor $visitor): void {
+        $visitor->visitGroupingExpr($this);
     }
 
     /**
@@ -21,5 +21,9 @@ class Grouping extends Expr {
      */
     public function getExpression(): Expr {
         return $this->expression;
+    }
+
+    public function __toString(): string {
+        return "TODO";
     }
 }

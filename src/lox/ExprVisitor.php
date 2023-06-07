@@ -3,9 +3,13 @@
 namespace lox;
 
 abstract class ExprVisitor {
-    abstract function visitAssignExpr(Assign $expr);
-    abstract function visitBinaryExpr(Binary $expr);
-    abstract function visitUnaryExpr(Unary $expr);
-    abstract function visitLiteralExpr(Literal $expr);
-    abstract function visitGroupingExpr(Grouping $grouping);
+    abstract public function visitAssignExpr(Assign $expr);
+
+    abstract public function visitBinaryExpr(Binary $expr);
+
+    abstract public function visitUnaryExpr(Unary $expr);
+
+    abstract public function visitLiteralExpr(Literal $expr);
+
+    abstract public function visitGroupingExpr(Grouping $grouping);
 }

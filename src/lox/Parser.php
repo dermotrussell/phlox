@@ -2,6 +2,9 @@
 
 namespace lox;
 
+require_once "src/lox/Binary.php";
+require_once "src/lox/Expr.php";
+
 class Parser {
     private TokenCollection $tokens;
     private int $current = 0;
@@ -85,6 +88,9 @@ class Parser {
         return $expr;
     }
 
+    /**
+     * @throws ParseError
+     */
     private function term() : Expr {
         $expr = $this->factor();
 
@@ -97,6 +103,9 @@ class Parser {
         return $expr;
     }
 
+    /**
+     * @throws ParseError
+     */
     private function factor() : Expr {
         $expr = $this->unary();
 
@@ -109,6 +118,9 @@ class Parser {
         return $expr;
     }
 
+    /**
+     * @throws ParseError
+     */
     private function unary() : Expr {
         if ($this->match(TokenType::BANG, TokenType::MINUS)) {
             $operator = $this->previous();
@@ -153,7 +165,7 @@ class Parser {
     /**
      * @throws ParseError
      */
-    private function error(Token $token, string $message) : ParseError {
+    private function error(Token $token, string $message) : void {
         parse_error($token, $message);
 
         throw new ParseError();

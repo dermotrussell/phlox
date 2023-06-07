@@ -3,5 +3,7 @@
 namespace lox;
 
 abstract class Expr {
-    abstract function accept(ExprVisitor $visitor) : ExprVisitor;
+    abstract public function accept(ExprVisitor $visitor): void;
+
+    abstract public function __toString(): string;
 }
